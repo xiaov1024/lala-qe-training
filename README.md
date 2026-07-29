@@ -52,6 +52,15 @@
 - `26-30真案例库完整版.md` — 30 真案例
 - `27-使用手册.md` — 使用指南
 
+## 5Why 推根工具(本机部署)
+
+- **v 真·用途**:学生课堂 / 教师备课用 5why 推根
+- **访问**(本机):`http://127.0.0.1:7777/ui`(HTML 前端,无 curl)
+- **访问**(本机,JSON API):`POST http://127.0.0.1:7777/analyze` body `{"problem":"..."}`
+- **健康检查**:`GET http://127.0.0.1:7777/healthz`
+- **真·5why 推根引擎**:从 17 份精读 + kaka v11 + Deming 14 Points 抽
+- **本仓库不含**:5why_daemon.py 是 v 本机工具,部署在 launchd(端口 7777)
+
 ## 数据源
 
 - 17 份精读(AIAG SPC / Western Electric SQC 1956 / Wheeler / Deming / Juran / IATF 16949 / AS9100 / 杨叔子 / 简明机械手册)
