@@ -160,6 +160,14 @@ function reset() {
 }
 
 buildProcesses();
+
+// 真·auto-play 演示(LALA 2026-07-29):每 3s 自动切下一个工艺
+let procIdx = 0;
+setInterval(() => {
+    procIdx = (procIdx + 1) % processes.length;
+    toggleProcess(procIdx);
+}, 3000);
+toggleProcess(0);
 </script>
 </body>
 </html>

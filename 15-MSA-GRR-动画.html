@@ -186,6 +186,14 @@ function reset(clearResults = true) {
 }
 
 buildGrid();
+
+// 真·auto-play 演示(LALA 2026-07-29):每 2.5s 自动跑 1 步
+let autoStep = 0;
+setInterval(() => {
+    autoStep = (autoStep % 4) + 1;
+    animateStep(autoStep);
+}, 2500);
+animateStep(1);
 </script>
 </body>
 </html>

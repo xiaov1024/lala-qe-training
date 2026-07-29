@@ -145,6 +145,15 @@ function reset() {
 }
 
 buildChart();
+
+// 真·auto-play 演示(LALA 2026-07-29):每 3s 自动跑下一步
+let paretoStep = 0;
+const paretoSteps = ['reset', 'step1', 'step2', 'step3'];
+setInterval(() => {
+    paretoStep = (paretoStep + 1) % paretoSteps.length;
+    window[paretoSteps[paretoStep]]();
+}, 3000);
+step1();
 </script>
 </body>
 </html>

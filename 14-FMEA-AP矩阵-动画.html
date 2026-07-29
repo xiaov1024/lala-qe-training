@@ -181,6 +181,26 @@ function reset() {
 }
 
 buildMatrix();
+
+// 真·auto-play 演示(LALA 2026-07-29):每 2 秒自动查 1 个组合
+let autoIdx = 0;
+const autoCases = [
+  { s: 9, o: 7, d: 4 },
+  { s: 5, o: 3, d: 5 },
+  { s: 7, o: 8, d: 6 },
+  { s: 3, o: 4, d: 7 },
+  { s: 8, o: 5, d: 8 },
+];
+function autoPlay() {
+  const c = autoCases[autoIdx % autoCases.length];
+  document.getElementById('s-input').value = c.s;
+  document.getElementById('o-input').value = c.o;
+  document.getElementById('d-input').value = c.d;
+  lookup();
+  autoIdx++;
+}
+autoPlay();
+setInterval(autoPlay, 2000);
 </script>
 </body>
 </html>

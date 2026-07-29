@@ -159,6 +159,14 @@ function calculate() {
 }
 
 showCase1();
+
+// 真·auto-play 演示(LALA 2026-07-29):每 2.5s 自动切下一个案例
+let caseIdx = 0;
+const cases = [showCase1, showCase2, showCase3];
+setInterval(() => {
+    caseIdx = (caseIdx + 1) % cases.length;
+    cases[caseIdx]();
+}, 2500);
 </script>
 </body>
 </html>
