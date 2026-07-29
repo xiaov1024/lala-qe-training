@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>帕累托分析动画</title>
+<style>
+body { font-family: "PingFang SC", sans-serif; background: #1a1a2e; color: #fff; margin: 0; padding: 20px; }
+.container { max-width: 1100px; margin: 0 auto; }
+h1 { color: #00d4ff; text-align: center; }
+.subtitle { color: #888; text-align: center; }
+.chart { display: flex; align-items: flex-end; justify-content: center; height: 400px; margin: 30px 0; gap: 8px; }
+.bar { flex: 1; background: linear-gradient(to top, #3498db, #5dade2); border-radius: 5px 5px 0 0; position: relative; transition: all 1s ease-out; height: 0; }
+.bar.vital { background: linear-gradient(to top, #c0392b, #e74c3c); }
+.bar.useful { background: linear-gradient(to top, #e67e22, #f39c12); }
+.bar.trivial { background: linear-gradient(to top, #34495e, #5d6d7e); }
+.bar-label { position: absolute; top: -25px; left: 0; right: 0; text-align: center; font-weight: bold; }
+.bar-axis { position: absolute; bottom: -25px; left: 0; right: 0; text-align: center; font-size: 14px; }
+.line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #e67e22; transition: all 1s; }
+.line-point { position: absolute; width: 10px; height: 10px; background: #e67e22; border-radius: 50%; transform: translate(-50%, -50%); }
+.controls { text-align: center; margin: 20px 0; }
+button { background: #3498db; color: white; border: none; padding: 12px 24px; margin: 0 5px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+.legend { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-color { width: 16px; height: 16px; border-radius: 3px; }
+.insight { text-align: center; margin: 20px 0; padding: 15px; background: #34495e; border-radius: 8px; font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>帕累托分析动画(80/20 法则)</h1>
+    <p class="subtitle">基于 Juran Trilogy + 5 道工序报废数据</p>
+
+    <div class="controls">
+        <button onclick="step1()">步骤 1: 收集数据</button>
+        <button onclick="step2()">步骤 2: 分类排序</button>
+        <button onclick="step3()">步骤 3: 累计百分比</button>
+        <button onclick="step4()">步骤 4: 关键少数</button>
+        <button onclick="reset()">重置</button>
+    </div>
+
+    <div class="chart" id="chart"></div>
+
+    <div class="legend">
+        <div class="legend-item"><span class="legend-color" style="background:#c0392b"></span> 关键少数 (前 20%)</div>
+        <div class="legend-item"><span class="legend-color" style="background:#e67e22"></span> 有用多数 (20-80%)</div>
+        <div class="legend-item"><span class="legend-color" style="background:#34495e"></span> 次要多数 (80%+)</div>
+    </div>
+
+    <div class="insight" id="insight">点击"开始"按钮,看帕累托分析流程</div>
+</div>
+
+<script>
+const data = [
+    { name: '工序 1 尺寸超差', value: 30 },
+    { name: '工序 2 表面粗糙度', value: 25 },
+    { name: '工序 3 形位公差', value: 20 },
+    { name: '工序 4 硬度', value: 15 },
+    { name: '工序 5 其他', value: 10 }
+];
+const total = data.reduce((s, d) => s + d.value, 0);
+
+function buildChart() {
+    const chart = document.getElementById('chart');
+    chart.innerHTML = '';
+    data.forEach((d, i) => {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.id = `bar-${i}`;
+        bar.style.width = '15%';
+        const valueLabel = document.createElement('div');
+        valueLabel.className = 'bar-label';
+        valueLabel.id = `value-${i}`;
+        valueLabel.textContent = d.value;
+        const axisLabel = document.createElement('div');
+        axisLabel.className = 'bar-axis';
+        axisLabel.textContent = d.name;
+        bar.appendChild(valueLabel);
+        bar.appendChild(axisLabel);
+        chart.appendChild(bar);
+    });
+}
+
+function step1() {
+    buildChart();
+    document.getElementById('insight').textContent = '收集数据: 5 道工序报废数据';
+    data.forEach((d, i) => {
+        setTimeout(() => {
+            const bar = document.getElementById(`bar-${i}`);
+            bar.style.height = `${(d.value / 35) * 100}%`;
+        }, i * 200);
+    });
+}
+
+function step2() {
+    step1();
+    setTimeout(() => {
+        data.forEach((d, i) => {
+            const bar = document.getElementById(`bar-${i}`);
+            if (i < 2) bar.classList.add('vital');
+            else if (i < 4) bar.classList.add('useful');
+            else bar.classList.add('trivial');
+        });
+        document.getElementById('insight').textContent = '分类排序: 工序 1+2 = 关键少数(55%)';
+    }, 1200);
+}
+
+function step3() {
+    step2();
+    setTimeout(() => {
+        let cumulative = 0;
+        const cumulativeLine = document.createElement('div');
+        cumulativeLine.className = 'line';
+        cumulativeLine.id = 'cumulative-line';
+        cumulativeLine.style.position = 'absolute';
+        cumulativeLine.style.top = '0';
+        cumulativeLine.style.left = '0';
+        cumulativeLine.style.right = '0';
+        document.getElementById('chart').appendChild(cumulativeLine);
+        
+        // 简化为显示累计百分比
+        const cumulativePcts = [];
+        data.forEach((d, i) => {
+            cumulative += d.value;
+            cumulativePcts.push(Math.round((cumulative / total) * 100));
+        });
+        document.getElementById('insight').innerHTML = 
+            `累计百分比: ${cumulativePcts.join('% → ')}%<br>` +
+            `真·关键少数: 前 3 工序 = 75%`;
+    }, 2000);
+}
+
+function step4() {
+    step3();
+    setTimeout(() => {
+        document.getElementById('insight').innerHTML = 
+            '<strong style="color:#c0392b">真·结论</strong><br>' +
+            '关键少数: 工序 1+2+3 = 75% 报废(前 3 道工序)<br>' +
+            '<strong>真·行动: 集中资源解决前 3 道工序(节约 100 万/年)</strong>';
+    }, 3500);
+}
+
+function reset() {
+    document.getElementById('chart').innerHTML = '';
+    document.getElementById('insight').textContent = '点击"开始"按钮,看帕累托分析流程';
+}
+
+buildChart();
+</script>
+</body>
+</html>

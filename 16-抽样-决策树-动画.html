@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>抽样决策树动画</title>
+<style>
+body { font-family: "PingFang SC", sans-serif; background: #1a1a2e; color: #fff; margin: 0; padding: 20px; }
+.container { max-width: 1100px; margin: 0 auto; }
+h1 { color: #00d4ff; text-align: center; }
+.subtitle { color: #888; text-align: center; }
+.tree { display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 20px 0; }
+.node {
+    padding: 15px 25px; background: #34495e; border-radius: 8px; cursor: pointer;
+    border: 2px solid transparent; transition: all 0.3s; text-align: center; min-width: 200px;
+}
+.node:hover { border-color: #00d4ff; }
+.node.highlighted { background: #3498db; border-color: #00d4ff; transform: scale(1.1); box-shadow: 0 0 20px #00d4ff; }
+.node.decision { background: #e67e22; }
+.node.decision.highlighted { background: #f39c12; }
+.node.result { background: #27ae60; }
+.node.result.highlighted { background: #2ecc71; }
+.node.reject { background: #c0392b; }
+.arrow { width: 2px; height: 30px; background: #888; }
+.arrow-label { font-size: 12px; color: #aaa; }
+.branches { display: flex; gap: 50px; }
+.controls { text-align: center; margin: 20px 0; }
+button { background: #3498db; color: white; border: none; padding: 12px 24px; margin: 0 5px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+.result-box { text-align: center; margin: 20px 0; padding: 20px; background: #34495e; border-radius: 8px; }
+.case { display: inline-block; margin: 10px; padding: 10px 20px; background: #1e1e1e; border-radius: 5px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>抽样决策树动画</h1>
+    <p class="subtitle">基于 GB/T 2828.1 / ANSI/ASQ Z1.4 / MIL-STD-1916</p>
+
+    <div class="controls">
+        <button onclick="startAnimation()">▶️ 开始决策动画</button>
+        <button onclick="reset()">🔄 重置</button>
+        <button onclick="showCase1()">📋 案例 1: 批量 800, AQL 0.65</button>
+        <button onclick="showCase2()">📋 案例 2: 关键件 100% 检验</button>
+        <button onclick="showCase3()">📋 案例 3: 供应商跳批</button>
+    </div>
+
+    <div class="tree" id="tree">
+        <div class="node" data-step="0">质量检验</div>
+        <div class="arrow"></div>
+        <div class="node decision" data-step="1">Q1: 全检可行?</div>
+        <div class="arrow"></div>
+        <div class="node result" data-step="2" id="node-yes1">YES → 全检 100%</div>
+        <div class="node reject" data-step="3" id="node-no1">NO → Q2</div>
+        <div class="arrow"></div>
+        <div class="node decision" data-step="4">Q2: 破坏性检验?</div>
+        <div class="arrow"></div>
+        <div class="node reject" data-step="5">YES → 抽样 100% 风险</div>
+        <div class="node decision" data-step="6" id="node-no2">NO → Q3</div>
+        <div class="arrow"></div>
+        <div class="node decision" data-step="7">Q3: 批量?</div>
+        <div class="arrow"></div>
+        <div class="node result" data-step="8" id="node-large">大 → 跳批 GB/T 2828.1</div>
+        <div class="node result" data-step="9" id="node-small">小 → 逐批抽样 Z1.4</div>
+    </div>
+
+    <div class="result-box" id="result-box">
+        <div class="case">批量: <input type="number" id="batch" value="800" min="1"></div>
+        <div class="case">检验水平: 
+            <select id="level">
+                <option>I</option>
+                <option selected>II</option>
+                <option>III</option>
+            </select>
+        </div>
+        <div class="case">AQL: <input type="number" id="aql" value="0.65" step="0.01" min="0.01"></div>
+        <button onclick="calculate()">📊 计算抽样方案</button>
+        <div id="result" style="margin-top:15px; font-size:18px;"></div>
+    </div>
+</div>
+
+<script>
+let currentStep = 0;
+const steps = [0, 1, 3, 4, 6, 7, 8];
+
+function startAnimation() {
+    reset();
+    let delay = 0;
+    steps.forEach((step, i) => {
+        setTimeout(() => {
+            document.querySelectorAll('.node').forEach(n => n.classList.remove('highlighted'));
+            const nodes = document.querySelectorAll(`[data-step="${step}"]`);
+            nodes.forEach(n => n.classList.add('highlighted'));
+        }, delay);
+        delay += 800;
+    });
+}
+
+function reset() {
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('highlighted'));
+    document.getElementById('result').textContent = '';
+}
+
+function showCase1() {
+    document.getElementById('batch').value = 800;
+    document.getElementById('level').value = 'II';
+    document.getElementById('aql').value = 0.65;
+    calculate();
+}
+
+function showCase2() {
+    document.getElementById('result').innerHTML = 
+        '<strong style="color:#c0392b">关键件 100% 检验</strong><br>' +
+        'Q1=YES → 走"全检 100%"分支<br>' +
+        '理由: 关键特性 + 安全相关 + 不能让步';
+}
+
+function showCase3() {
+    document.getElementById('result').innerHTML = 
+        '<strong style="color:#27ae60">供应商跳批</strong><br>' +
+        'Q1=NO → Q2=NO → Q3=大 → 跳批(MIL-STD-1916)<br>' +
+        '理由: 供应商历史质量稳定 + 批量大';
+}
+
+function calculate() {
+    const batch = parseInt(document.getElementById('batch').value);
+    const level = document.getElementById('level').value;
+    const aql = parseFloat(document.getElementById('aql').value);
+    
+    // 简化:查 GB/T 2828.1 表 2-A
+    // 实际:基于批量 + 检验水平确定样本量字码
+    let sampleCode;
+    if (batch <= 8) sampleCode = 'A';
+    else if (batch <= 15) sampleCode = 'B';
+    else if (batch <= 25) sampleCode = 'C';
+    else if (batch <= 50) sampleCode = 'D';
+    else if (batch <= 90) sampleCode = 'E';
+    else if (batch <= 150) sampleCode = 'F';
+    else if (batch <= 280) sampleCode = 'G';
+    else if (batch <= 500) sampleCode = 'H';
+    else if (batch <= 1200) sampleCode = 'J';
+    else if (batch <= 3200) sampleCode = 'K';
+    else sampleCode = 'L';
+    
+    // 简化样本量
+    const sampleSizes = {A:2, B:3, C:5, D:5, E:8, F:13, G:20, H:32, J:50, K:80, L:125};
+    const sampleSize = sampleSizes[sampleCode];
+    
+    // Ac / Re (AQL 0.65 简化为 AQL 1.0)
+    let ac, re;
+    if (sampleSize <= 8) { ac = 0; re = 1; }
+    else if (sampleSize <= 32) { ac = 1; re = 2; }
+    else { ac = 2; re = 3; }
+    
+    const result = document.getElementById('result');
+    result.innerHTML = 
+        `<strong style="color:#00d4ff">抽样方案 (GB/T 2828.1 + Z1.4):</strong><br>` +
+        `样本量字码: ${sampleCode} (批量 ${batch}, 水平 ${level})<br>` +
+        `样本量 n: <strong style="color:#27ae60">${sampleSize}</strong> 个<br>` +
+        `AQL: ${aql} → Ac: <strong style="color:#27ae60">${ac}</strong>, Re: <strong style="color:#c0392b">${re}</strong><br>` +
+        `判定: 接收数 ≤ ${ac} → 接收 / 拒收数 ≥ ${re} → 拒收`;
+}
+
+showCase1();
+</script>
+</body>
+</html>

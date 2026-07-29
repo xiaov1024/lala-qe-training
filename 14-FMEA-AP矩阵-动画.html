@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>FMEA AP 矩阵动画</title>
+<style>
+body {
+    font-family: "PingFang SC", sans-serif;
+    background: #1a1a2e;
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+}
+.container { max-width: 1000px; margin: 0 auto; }
+h1 { color: #00d4ff; text-align: center; }
+.subtitle { color: #888; text-align: center; }
+.matrix { display: grid; grid-template-columns: 80px repeat(10, 1fr); gap: 2px; margin: 20px 0; }
+.cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    background: #34495e;
+    border-radius: 3px;
+    opacity: 0.2;
+    transition: all 0.3s;
+}
+.cell.H { background: #c0392b; opacity: 1; }
+.cell.M { background: #e67e22; opacity: 1; }
+.cell.L { background: #27ae60; opacity: 1; }
+.cell.label { background: transparent; opacity: 1; font-weight: bold; }
+.cell.highlighted { transform: scale(1.3); box-shadow: 0 0 20px #00d4ff; z-index: 10; }
+.controls { text-align: center; margin: 20px 0; }
+button { background: #3498db; color: white; border: none; padding: 10px 20px; margin: 0 5px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+button:hover { background: #2980b9; }
+.input-box { display: inline-block; margin: 0 10px; }
+input { padding: 8px; width: 60px; font-size: 16px; border-radius: 3px; border: none; }
+.legend { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-color { width: 16px; height: 16px; border-radius: 3px; }
+.result { text-align: center; margin: 20px 0; font-size: 24px; }
+.ap-h { color: #c0392b; }
+.ap-m { color: #e67e22; }
+.ap-l { color: #27ae60; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>FMEA AP 矩阵动画</h1>
+    <p class="subtitle">基于 AIAG-VDA 2019 + Woodward</p>
+
+    <div class="controls">
+        <div class="input-box">
+            <label>S:</label>
+            <input type="number" id="s-input" min="1" max="10" value="9">
+        </div>
+        <div class="input-box">
+            <label>O:</label>
+            <input type="number" id="o-input" min="1" max="10" value="7">
+        </div>
+        <div class="input-box">
+            <label>D:</label>
+            <input type="number" id="d-input" min="1" max="10" value="4">
+        </div>
+        <button onclick="lookup()">查 AP 矩阵</button>
+        <button onclick="reset()">重置</button>
+    </div>
+
+    <div class="matrix" id="matrix">
+        <!-- 11x11 网格:1 行标签 + 10 列数据 + 1 列标签 = 11x11 -->
+        <!-- LALA 简化为 11x11 -->
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><span class="legend-color" style="background:#c0392b"></span> H 高</div>
+        <div class="legend-item"><span class="legend-color" style="background:#e67e22"></span> M 中</div>
+        <div class="legend-item"><span class="legend-color" style="background:#27ae60"></span> L 低</div>
+    </div>
+
+    <div class="result" id="result">输入 S/O/D 查 AP</div>
+</div>
+
+<script>
+// 真·AP 矩阵(11x11) - 用 nested array 但用一维索引
+// 简化:每个 S 值对应一行
+// S=1-3:全部 L
+// S=4-6:看 O 决定
+// S=7-8:看 O 决定
+// S=9-10:全部 H
+function getAP(s, o, d) {
+    // 简化为看 S + O
+    if (s >= 9) {
+        // S=9-10:基本 H
+        if (o <= 4) {
+            // O 1-4
+            return (d <= 4) ? 'H' : 'H';
+        } else {
+            return 'H';
+        }
+    } else if (s >= 7) {
+        // S=7-8
+        if (o >= 7) {
+            // O 7-10
+            return (d <= 4) ? 'H' : 'M';
+        } else if (o >= 4) {
+            return 'M';
+        } else {
+            return 'L';
+        }
+    } else {
+        // S=1-6
+        if (o >= 7 && d <= 4) {
+            return 'M';
+        }
+        return 'L';
+    }
+}
+
+function buildMatrix() {
+    const matrix = document.getElementById('matrix');
+    matrix.innerHTML = '';
+    // 行标签
+    for (let i = 0; i <= 10; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell label';
+        cell.textContent = i === 0 ? 'S \\ O' : `${i}`;
+        matrix.appendChild(cell);
+    }
+    // 10 行 × 10 列
+    for (let s = 1; s <= 10; s++) {
+        const rowLabel = document.createElement('div');
+        rowLabel.className = 'cell label';
+        rowLabel.textContent = `S=${s}`;
+        matrix.appendChild(rowLabel);
+        for (let o = 1; o <= 10; o++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.s = s;
+            cell.dataset.o = o;
+            cell.id = `cell-${s}-${o}`;
+            // 自动填色(根据 S/O)
+            const d = 5;  // 默认 D=5
+            const ap = getAP(s, o, d);
+            cell.classList.add(ap);
+            cell.textContent = ap;
+            matrix.appendChild(cell);
+        }
+    }
+}
+
+function lookup() {
+    const s = parseInt(document.getElementById('s-input').value);
+    const o = parseInt(document.getElementById('o-input').value);
+    const d = parseInt(document.getElementById('d-input').value);
+    if (s < 1 || s > 10 || o < 1 || o > 10 || d < 1 || d > 10) {
+        document.getElementById('result').textContent = '请输入 1-10';
+        return;
+    }
+    // 真·查表 - 简化版
+    const ap = getAP(s, o, d);
+    const result = document.getElementById('result');
+    result.textContent = `S=${s} O=${o} D=${d} → AP = ${ap}`;
+    result.className = 'result ap-' + ap.toLowerCase();
+    // 高亮
+    document.querySelectorAll('.cell').forEach(c => c.classList.remove('highlighted'));
+    const cell = document.getElementById(`cell-${s}-${o}`);
+    if (cell) {
+        cell.classList.add('highlighted');
+        cell.textContent = ap;
+        cell.classList.add(ap);
+    }
+}
+
+function reset() {
+    document.querySelectorAll('.cell').forEach(c => {
+        c.classList.remove('highlighted', 'H', 'M', 'L');
+        c.textContent = '';
+    });
+    document.getElementById('result').textContent = '输入 S/O/D 查 AP';
+}
+
+buildMatrix();
+</script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>SPC 8 判异规则 SVG 动画</title>
+<style>
+body {
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #1a1a2e;
+    color: #fff;
+}
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+h1 {
+    color: #00d4ff;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.subtitle {
+    color: #888;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.svg-container {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.controls {
+    text-align: center;
+    margin: 20px 0;
+}
+button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+button:hover { background: #2980b9; }
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+.dot {
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+}
+.bad-dot {
+    animation: alert 1s infinite;
+}
+@keyframes alert {
+    0%, 100% { fill: #ff6b6b; r: 8; }
+    50% { fill: #ff9f43; r: 12; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>SPC 8 判异规则 SVG 动画</h1>
+    <p class="subtitle">Statistical Process Control - 8 判异规则可视化</p>
+
+    <div class="svg-container">
+        <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" id="spc-svg">
+            <!-- 控制限 -->
+            <line id="ucl" x1="50" y1="100" x2="950" y2="100" stroke="#ff6b6b" stroke-width="3" stroke-dasharray="0">
+                <animate attributeName="opacity" values="0;1" dur="1s" fill="freeze"/>
+            </line>
+            <line id="lcl" x1="50" y1="400" x2="950" y2="400" stroke="#ff6b6b" stroke-width="3">
+                <animate attributeName="opacity" values="0;1" dur="1s" begin="0.5s" fill="freeze"/>
+            </line>
+            <line id="cl" x1="50" y1="250" x2="950" y2="250" stroke="#4ecdc4" stroke-width="2" stroke-dasharray="5,5">
+                <animate attributeName="opacity" values="0;1" dur="1s" begin="1s" fill="freeze"/>
+            </line>
+
+            <!-- 标签 -->
+            <text x="960" y="105" fill="#ff6b6b" font-size="16" font-weight="bold">UCL +3σ</text>
+            <text x="960" y="405" fill="#ff6b6b" font-size="16" font-weight="bold">LCL -3σ</text>
+            <text x="960" y="255" fill="#4ecdc4" font-size="16">CL</text>
+
+            <!-- 13 个数据点(规则 1 演示:第 13 点超 UCL) -->
+            <g id="data-points">
+                <!-- 点 1-12:正常范围 -->
+                <circle cx="100" cy="240" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2s" fill="freeze"/>
+                </circle>
+                <circle cx="170" cy="265" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.1s" fill="freeze"/>
+                </circle>
+                <circle cx="240" cy="255" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.2s" fill="freeze"/>
+                </circle>
+                <circle cx="310" cy="230" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.3s" fill="freeze"/>
+                </circle>
+                <circle cx="380" cy="270" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.4s" fill="freeze"/>
+                </circle>
+                <circle cx="450" cy="245" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.5s" fill="freeze"/>
+                </circle>
+                <circle cx="520" cy="260" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.6s" fill="freeze"/>
+                </circle>
+                <circle cx="590" cy="235" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.7s" fill="freeze"/>
+                </circle>
+                <circle cx="660" cy="275" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.8s" fill="freeze"/>
+                </circle>
+                <circle cx="730" cy="250" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.9s" fill="freeze"/>
+                </circle>
+                <circle cx="800" cy="240" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="3s" fill="freeze"/>
+                </circle>
+                <circle cx="870" cy="265" r="6" fill="#4ecdc4">
+                    <animate attributeName="opacity" values="0;1" dur="0.3s" begin="3.1s" fill="freeze"/>
+                </circle>
+                <!-- 点 13:超 UCL(规则 1 触发) -->
+                <circle cx="940" cy="80" r="8" fill="#ff6b6b" class="bad-dot">
+                    <animate attributeName="opacity" values="0;1" dur="0.5s" begin="4s" fill="freeze"/>
+                    <animate attributeName="r" values="0;14;10" dur="0.5s" begin="4s" fill="freeze"/>
+                </circle>
+            </g>
+
+            <!-- 警告文本 -->
+            <text id="warning" x="400" y="450" fill="#ff6b6b" font-size="24" font-weight="bold" text-anchor="middle" opacity="0">
+                规则 1: 1 点超 3σ = 失控!
+                <animate attributeName="opacity" values="0;1" dur="0.5s" begin="5s" fill="freeze"/>
+                <animate attributeName="font-size" values="24;28;24" dur="1s" begin="5s" repeatCount="indefinite"/>
+            </text>
+
+            <!-- 标题 -->
+            <text x="500" y="50" fill="#1e1e1e" font-size="22" font-weight="bold" text-anchor="middle">
+                SPC 控制图(规则 1 演示)
+            </text>
+        </svg>
+    </div>
+
+    <div class="controls">
+        <button onclick="restartAnimation()">🔄 重播动画</button>
+        <button onclick="showRule2()">▶️ 演示规则 2(9 点同侧)</button>
+        <button onclick="showAllRules()">📋 显示所有规则</button>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <span class="legend-color" style="background:#4ecdc4"></span>
+            <span>正常点</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background:#ff6b6b"></span>
+            <span>失控点</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background:#ffd93d"></span>
+            <span>趋势预警</span>
+        </div>
+    </div>
+
+    <div id="rules-list" style="display:none; background:#2c3e50; padding:20px; border-radius:10px; margin-top:20px;">
+        <h2 style="color:#00d4ff; text-align:center;">AIAG 8 判异规则</h2>
+        <ol style="font-size:18px; line-height:2;">
+            <li style="color:#ff6b6b;"><strong>规则 1:</strong>1 点超 3σ(任一侧)</li>
+            <li style="color:#ffd93d;"><strong>规则 2:</strong>连续 9 点在中心线同侧</li>
+            <li style="color:#ff9f43;"><strong>规则 3:</strong>连续 6 点单调上升或下降</li>
+            <li style="color:#fc5c65;"><strong>规则 4:</strong>连续 14 点交替升降</li>
+            <li style="color:#eccc68;"><strong>规则 5:</strong>2/3 点超 2σ 同侧</li>
+            <li style="color:#7bed9f;"><strong>规则 6:</strong>4/5 点超 1σ 同侧</li>
+            <li style="color:#70a1ff;"><strong>规则 7:</strong>15 点全在 1σ 内</li>
+            <li style="color:#ff6b81;"><strong>规则 8:</strong>8 点都在 1σ 范围外</li>
+        </ol>
+        <p style="color:#888; text-align:center; margin-top:20px;">任何 1 条触发 = 立即停机查原因</p>
+    </div>
+</div>
+
+<script>
+function restartAnimation() {
+    // 重载 SVG 触发重播
+    const svg = document.getElementById('spc-svg');
+    const parent = svg.parentNode;
+    const clone = svg.cloneNode(true);
+    parent.removeChild(svg);
+    parent.appendChild(clone);
+    document.getElementById('rules-list').style.display = 'none';
+}
+
+function showRule2() {
+    alert('规则 2: 连续 9 点在中心线同侧 = 系统偏移\n\n提示:本次演示只展示规则 1,其他规则可通过修改 SVG 数据点实现');
+}
+
+function showAllRules() {
+    document.getElementById('rules-list').style.display = 'block';
+}
+</script>
+
+</body>
+</html>

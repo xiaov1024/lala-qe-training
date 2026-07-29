@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>机加工 + 质量 双技能实战手册 v1</title>
+<style>
+@page { size: A4; margin: 2cm; }
+body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; line-height: 1.6; max-width: 100%; margin: 0 auto; padding: 20px; color: #222; }
+h1 { color: #2c3e50; border-bottom: 3px double #2c3e50; padding-bottom: 10px; text-align: center; page-break-before: always; }
+h2 { color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-top: 30px; }
+h3 { color: #16a085; margin-top: 20px; }
+h4 { color: #2980b9; margin-top: 15px; }
+.mermaid { text-align: center; margin: 20px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+.info-box { background: #ecf0f1; border-left: 4px solid #3498db; padding: 10px 15px; margin: 15px 0; }
+.warning-box { background: #fef9e7; border-left: 4px solid #f39c12; padding: 10px 15px; margin: 15px 0; }
+.toc { background: #f8f9fa; padding: 20px; border-radius: 5px; }
+.toc a { color: #2c3e50; text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+th, td { border: 1px solid #bdc3c7; padding: 8px; text-align: left; }
+th { background: #34495e; color: white; }
+ul, ol { padding-left: 25px; }
+li { margin: 5px 0; }
+code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: "Courier New", monospace; }
+.page-break { page-break-after: always; }
+.footer { text-align: center; margin-top: 30px; color: #7f8c8d; font-size: 0.9em; border-top: 1px solid #bdc3c7; padding-top: 10px; }
+ul.subitems { padding-left: 40px; }
+ul.subitems li { margin: 2px 0; }
+</style>
+</head>
+<body>
+
+<div class="toc">
+<h2 style="text-align: center;">目录</h2>
+<ul>
+<li><a href="#sec1">1. 机加工常见问题</a>
+<ul class="subitems">
+<li>1.1 车削问题</li>
+<li>1.2 铣削问题</li>
+<li>1.3 磨削问题</li>
+<li>1.4 钻削/攻丝问题</li>
+<li>1.5 热处理问题</li>
+<li>1.6 装夹问题</li>
+</ul>
+</li>
+<li><a href="#sec2">2. 批量加工常见问题</a></li>
+<li><a href="#sec3">3. 容易被忽略的问题</a></li>
+<li><a href="#sec4">4. 奇葩案例</a></li>
+<li><a href="#sec5">5. 解决方法</a></li>
+<li><a href="#sec6">6. 帕累托分析</a></li>
+<li><a href="#sec7">7. 样本抽样</a></li>
+<li><a href="#sec8">8. 质量合规</a></li>
+</ul>
+</div>
+
+<div class="page-break"></div>
+
+<h1 id="sec1">1. 机加工常见问题</h1>
+
+<h2>1.1 车削问题</h2>
+<div class="info-box">
+<strong>典型问题:</strong>粗糙度不达标 / 外圆尺寸超差 / 锥度误差 / 同轴度差
+</div>
+<h3>诊断流程</h3>
+<div class="mermaid">graph TB
+    Start[车削质量问题]
+    Start --> Q1{粗糙度<br/>不达标?}
+    Q1 -->|是| A11[查:切削速度/进给量/刀片磨损]
+    Q1 -->|否| Q2{尺寸超差?}
+    Q2 -->|是| A21[查:刀具补偿/热变形/量具]
+    Q2 -->|否| Q3{锥度误差?}
+    Q3 -->|是| A31[查:主轴跳动/刀架刚性/导轨]
+    Q3 -->|否| Q4{同轴度差?}
+    Q4 -->|是| A41[查:装夹/顶尖/跟刀架]
+    Q4 -->|否| Done[其他问题]
+</div>
+
+<h2>1.2 铣削问题</h2>
+<div class="info-box">
+<strong>典型问题:</strong>平面度差 / 垂直度超差 / 振刀 / 表面波纹
+</div>
+
+<h2>1.3 磨削问题</h2>
+<div class="info-box">
+<strong>典型问题:</strong>烧伤 / 磨削裂纹 / 残留应力
+</div>
+
+<h2>1.4 钻削/攻丝问题</h2>
+<div class="info-box">
+<strong>典型问题:</strong>孔径超差 / 螺纹乱扣 / 钻头折断
+</div>
+
+<h2>1.5 热处理问题</h2>
+<div class="info-box">
+<strong>典型问题:</strong>硬度不达标 / 变形 / 残余应力
+</div>
+
+<h2>1.6 装夹问题</h2>
+<div class="info-box">
+<strong>典型问题:</strong>装夹变形 / 重复装夹误差 / 装夹不到位
+</div>
+
+<div class="page-break"></div>
+
+<h1 id="sec2">2. 批量加工常见问题</h1>
+
+<div class="info-box">
+<strong>5 大常见问题:</strong>过程能力不足 / 设备老化 / 工艺纪律 / 物料批次差异 / 环境因素
+</div>
+
+<h3>2.1 过程能力诊断</h3>
+<div class="mermaid">graph TB
+    Start[批量加工<br/>过程能力不足]
+    Start --> Q1{Cp < 1.0?}
+    Q1 -->|是| A11[查:过程变异大<br/>设备/原料/工艺]
+    Q1 -->|否| Q2{Cpk < 1.33?}
+    Q2 -->|是| A21[查:均值偏移<br/>装夹/对刀]
+    Q2 -->|否| Q3{Cp ≠ Cpk?}
+    Q3 -->|是| A31[查:过程中心化<br/>调整参数]
+    Q3 -->|否| Done[其他问题]
+</div>
+
+<h3>2.2-2.5 关键问题速查</h3>
+<table>
+<thead><tr><th>类别</th><th>关键问题</th><th>诊断重点</th></tr></thead>
+<tbody>
+<tr><td>设备老化</td><td>首件 vs 末件差异</td><td>刀具寿命/热平衡</td></tr>
+<tr><td>工艺纪律</td><td>操作工改参数</td><td>培训/监督</td></tr>
+<tr><td>物料差异</td><td>来料波动</td><td>IQC + 供应商管理</td></tr>
+<tr><td>环境因素</td><td>温度变化</td><td>车间温控</td></tr>
+</tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h1 id="sec3">3. 容易被忽略的问题</h1>
+
+<div class="warning-box">
+<strong>5 大隐性陷阱</strong>:这 5 类问题「看着没事,实际致命」,新人最难识别。
+</div>
+
+<h3>3.1 测量系统</h3>
+<div class="mermaid">graph TB
+    Start[测量问题]
+    Start --> Q1{GR&R > 30%?}
+    Q1 -->|是| A11[查:量具/手法/环境]
+    Q1 -->|否| Q2{量具<br/>未校准?}
+    Q2 -->|是| A21[查:校准计划/记录]
+    Q2 -->|否| Q3{测量手法<br/>差异?}
+    Q3 -->|是| A31[查:培训/SOP/夹具]
+    Q3 -->|否| Done[其他问题]
+</div>
+
+<h3>3.2-3.5 速查</h3>
+<table>
+<thead><tr><th>类别</th><th>陷阱</th><th>诊断</th></tr></thead>
+<tbody>
+<tr><td>工艺设计</td><td>基准不统一</td><td>基准重合原理</td></tr>
+<tr><td>文档</td><td>工艺文件未受控</td><td>文件管理/版本</td></tr>
+<tr><td>培训</td><td>操作工不懂工艺</td><td>培训/考核</td></tr>
+<tr><td>沟通</td><td>跨部门扯皮</td><td>APQP 团队</td></tr>
+</tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h1 id="sec4">4. 奇葩案例</h1>
+
+<div class="info-box">
+<strong>真·经验外化:</strong>从 B 站 1910 视频 + 工厂真·事故 + 老师傅口述 = 培训软件内容
+</div>
+
+<h3>4.1 B 站 1910 视频 TOP 翻车案例</h3>
+<table>
+<thead><tr><th>视频</th><th>UP</th><th>播放</th><th>真·痛点</th></tr></thead>
+<tbody>
+<tr><td>数控 CNC 还能学吗?</td><td>重庆小新</td><td>35 万</td><td>年轻人 CNC 转型</td></tr>
+<tr><td>为什么工厂宁愿倒闭,也不加工资</td><td>数据库kira</td><td>84 万</td><td>工厂经济</td></tr>
+<tr><td>年轻人宁愿电子厂 3K 不干 CNC 8K</td><td>涛哥自动化指南</td><td>20 万</td><td>CNC 收入</td></tr>
+<tr><td>张雪峰:机械专业求你们别再玩</td><td>机械设计指导菌</td><td>18 万</td><td>机械劝退</td></tr>
+<tr><td>机械毕业真实薪资</td><td>机械生二蛋哥</td><td>28.9 万</td><td>真实薪资</td></tr>
+<tr><td>就业率倒数工科 TOP5</td><td>Topguide1</td><td>19.7 万</td><td>转行率</td></tr>
+<tr><td>机加工教程零基础到精通</td><td>二里半机械设计</td><td>34 万</td><td>基础教程</td></tr>
+<tr><td>SPC 速成 5 分钟</td><td>优思学苑六西格玛</td><td>3.6 万</td><td>SPC 入门</td></tr>
+<tr><td>SPC 实操</td><td>数智营企</td><td>194</td><td>SPC 实战</td></tr>
+<tr><td>FMEA 精品课程</td><td>海岸线工业智能体</td><td>14.2 万</td><td>FMEA 实战</td></tr>
+<tr><td>5 大工具详解 APQP/PPAP/FMEA/MSA/SPC</td><td>讨教君</td><td>35 万</td><td>5 大工具</td></tr>
+</tbody>
+</table>
+
+<h3>4.2 经典奇葩事分类</h3>
+<div class="mermaid">graph TB
+    Start[奇葩案例]
+    Start --> C1[经典案例<br/>翻车集锦]
+    Start --> C2[测量奇葩<br/>卡尺/三坐标/粗糙度]
+    Start --> C3[设计奇葩<br/>公差/基准/结构]
+    Start --> C4[工艺奇葩<br/>路线/余量/参数]
+    Start --> C5[质量奇葩<br/>合格/废品/投诉]
+    C1 --> Fix[真·经验外化]
+    C2 --> Fix
+    C3 --> Fix
+    C4 --> Fix
+    C5 --> Fix
+</div>
+
+<div class="page-break"></div>
+
+<h1 id="sec5">5. 解决方法</h1>
+
+<h3>5.1 问题诊断 5 步</h3>
+<div class="mermaid">graph TB
+    Start[质量问题]
+    Start --> S1[1. 现象观察<br/>数据/现场]
+    S1 --> S2[2. 5Why 分析]
+    S2 --> S3[3. 鱼骨图 6M]
+    S3 --> S4[4. 假设验证 DOE]
+    S4 --> S5[5. 根因确认]
+    S5 --> Done[真·根因]
+</div>
+
+<h3>5.2 解决流程</h3>
+<div class="mermaid">graph TB
+    Root[根因确认]
+    Root --> A1[1. 临时措施<br/>围堵]
+    A1 --> A2[2. 永久措施<br/>根因对策]
+    A2 --> A3[3. 标准化<br/>防再发]
+    A3 --> Done[真·闭环]
+</div>
+
+<h3>5.3 8D 报告(D1-D8)</h3>
+<div class="mermaid">graph TB
+    D0[应急措施]
+    D0 --> D1[D1:成立小组]
+    D1 --> D2[D2:问题描述]
+    D2 --> D3[D3:围堵措施]
+    D3 --> D4[D4:根因分析]
+    D4 --> D5[D5:选择永久对策]
+    D5 --> D6[D6:实施永久对策]
+    D6 --> D7[D7:防止再发]
+    D7 --> D8[D8:祝贺小组]
+</div>
+
+<h3>5.4 工具集</h3>
+<table>
+<thead><tr><th>工具</th><th>用途</th><th>对应模板</th></tr></thead>
+<tbody>
+<tr><td>SPC 控制图 8 判异</td><td>过程监控</td><td>已沉淀</td></tr>
+<tr><td>FMEA AP 矩阵</td><td>失效分析</td><td>已沉淀</td></tr>
+<tr><td>DOE 实验设计</td><td>假设验证</td><td>—</td></tr>
+<tr><td>5Why + 鱼骨图</td><td>根因分析</td><td>—</td></tr>
+<tr><td>PDCA 循环</td><td>持续改进</td><td>—</td></tr>
+</tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h1 id="sec6">6. 帕累托分析</h1>
+
+<div class="info-box">
+<strong>80/20 法则:</strong>80% 的问题来自 20% 的原因 = 找关键少数
+</div>
+
+<h3>6.1 实施步骤</h3>
+<ol>
+<li>收集问题数据</li>
+<li>分类(按问题类型/工序/设备)</li>
+<li>排序(按频次/严重度)</li>
+<li>累计百分比</li>
+<li>画帕累托图</li>
+<li>找关键少数</li>
+</ol>
+
+<h3>6.2 真·应用案例</h3>
+<table>
+<thead><tr><th>场景</th><th>关键少数</th><th>影响</th></tr></thead>
+<tbody>
+<tr><td>机加工车间</td><td>3 个工序</td><td>60% 报废</td></tr>
+<tr><td>客户投诉</td><td>3 个型号</td><td>80% 投诉</td></tr>
+<tr><td>设备故障</td><td>5 台老设备</td><td>70% 故障</td></tr>
+</tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h1 id="sec7">7. 样本抽样</h1>
+
+<h3>7.1 GB/T 2828.1 抽样方案</h3>
+<table>
+<thead><tr><th>批量 N</th><th>检验水平</th><th>AQL</th><th>样本量 n</th><th>Ac</th><th>Re</th></tr></thead>
+<tbody>
+<tr><td>500</td><td>II</td><td>1.0</td><td>50</td><td>1</td><td>2</td></tr>
+<tr><td>1000</td><td>II</td><td>1.0</td><td>80</td><td>2</td><td>3</td></tr>
+<tr><td>2000</td><td>II</td><td>1.0</td><td>125</td><td>3</td><td>4</td></tr>
+</tbody>
+</table>
+
+<h3>7.2 抽样决策树</h3>
+<div class="mermaid">graph TB
+    Q[质量检验决策]
+    Q --> C1{全检<br/>可行?}
+    C1 -->|是| A1[全检]
+    C1 -->|否| C2{破坏性<br/>检验?}
+    C2 -->|是| A2[抽样<br/>100% 风险]
+    C2 -->|否| C3{批量?}
+    C3 -->|大| A3[跳批<br/>GB/T 2828.1]
+    C3 -->|小| A4[逐批抽样<br/>Z1.4]
+</div>
+
+<h3>7.3 抽样实施</h3>
+<ul>
+<li><strong>首件检验(FAI)</strong>:每批首件必检</li>
+<li><strong>末件检验</strong>:关键件末件必检</li>
+<li><strong>巡回检验(Patrol)</strong>:过程中随机抽样</li>
+<li><strong>抽样频率</strong>:按批量 + 关键度定</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h1 id="sec8">8. 质量合规</h1>
+
+<h3>8.1 国际标准</h3>
+<table>
+<thead><tr><th>标准</th><th>领域</th><th>真·用途</th></tr></thead>
+<tbody>
+<tr><td>ISO 9001</td><td>质量管理基础</td><td>通用</td></tr>
+<tr><td>IATF 16949</td><td>汽车 QMS</td><td>汽车业</td></tr>
+<tr><td>AS9100</td><td>航空 QMS</td><td>航空业</td></tr>
+<tr><td>ISO 13485</td><td>医疗器械 QMS</td><td>医疗</td></tr>
+</tbody>
+</table>
+
+<h3>8.2 OEM CSR 关键差异</h3>
+<table>
+<thead><tr><th>OEM</th><th>CSR</th><th>关键内容</th></tr></thead>
+<tbody>
+<tr><td>Ford</td><td>Ford Q1 + IATF CSR 2026</td><td>ePSW + Q1MSA + SIM 80+</td></tr>
+<tr><td>GM</td><td>BIQS Scorecard 2025</td><td>SupplyPower 平台 + SPPS + NBH</td></tr>
+<tr><td>Toyota</td><td>SQAM Issue 7</td><td>SPMP + QRC + SPQA</td></tr>
+<tr><td>Volvo</td><td>IATF CSR V2 2025-02</td><td>SPQAM + Code of Conduct + ISMS</td></tr>
+<tr><td>VW</td><td>Formel Q 9th</td><td>质量能力 A/B/C 评级 + VDA 6.3</td></tr>
+</tbody>
+</table>
+
+<h3>8.3 5 大工具认证路径</h3>
+<div class="mermaid">graph LR
+    Start[质量工程师] --> A[APQP<br/>2-3 月]
+    A --> B[PPAP<br/>1-2 月]
+    B --> C[FMEA<br/>1-2 月]
+    C --> D[MSA<br/>1 月]
+    D --> E[SPC<br/>1-2 月]
+    E --> Cert[CAQ 中级质量工程师<br/>机加工 + 质量双技能]
+</div>
+
+<h3>8.4 双技能人才成长路径</h3>
+<div class="mermaid">graph LR
+    A[机械专业] --> B[CNC 操机 1-3 年]
+    B --> C[工艺 1-3 年]
+    C --> D[PQE 3-5 年<br/>15-25K]
+    D --> E[SQE 5-10 年<br/>25-50K]
+    E --> F[质量经理 10+ 年<br/>50-100K]
+</div>
+
+<div class="page-break"></div>
+
+<div class="footer">
+<h2>参考资料</h2>
+<p>1. AIAG SPC Reference Manual(Brown 2nd, 232 页)</p>
+<p>2. Western Electric SQC Handbook(23M)</p>
+<p>3. AIAG-VDA FMEA Handbook 2019(19.7M)</p>
+<p>4. AIAG APQP Reference Manual 5M</p>
+<p>5. AIAG PPAP 4.0 5M</p>
+<p>6. ASQ CQE Handbook 5th(714 页)</p>
+<p>7. GB/T 2828.1-2003</p>
+<p>8. 注册质量工程师手册(中文,470 页)</p>
+<p>9. 4 本必读:贾新章《SPC》/ 谢建华《FMEA》/《六西格玛手册》/《六西格玛管理统计指南》</p>
+<p>10. B 站 1910 视频 + 1051 UP 主数据(LALA v4-v8)</p>
+<p>11. kaka v1 网络调研补全(20K)</p>
+<p>12. kaka v9 UP 主生态(10K)</p>
+<p>13. kaka v11 市场与人才(16K)</p>
+<p>14. kaka v12 质量圈生态(16K)</p>
+<p>15. kaka v13 海外培训资源(15K)</p>
+<p>16. kaka v15 现成图解动画资源(16K)</p>
+<br/>
+<p><strong>LALA 2026-07-28 22:30 · v1.0 · Desktop/QE培训软件-v0/03-PDF/</strong></p>
+</div>
+
+</body>
+</html>
